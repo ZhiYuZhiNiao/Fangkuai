@@ -1,13 +1,29 @@
 import GameMap from "./GameMap.js"
 import { createGameObj } from './Factory.js'
 import BlocksType from "./BlocksType.js"
-import { matrixMul, rotateMap } from './utils.js'
+import { matrixMul, matrix3Mul3 } from './utils.js'
 import GameObject from "./GameObject.js"
 import { ROW, COL, UNIT } from './constData'
 class GameMgr {
   autoSpeed: number = 1
 
+
   start() {
+
+    const temp = matrix3Mul3([
+      [1, 2, 1],
+      [1, 2, 0],
+      [1, 2, 3]
+    ], [
+      [0, 1, 2],
+      [1, 2, 3],
+      [1, 1, 2],
+    ])
+
+    console.log('temp', temp)
+
+
+
     const gameMap = GameMap.createMap()
     console.log('gameMap', gameMap)
     const curObj = createGameObj(BlocksType.L)

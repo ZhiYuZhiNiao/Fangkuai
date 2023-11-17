@@ -17,5 +17,11 @@ class Block {
     set y(val) {
         this.el.style.top = (val * UNIT) + 'px';
     }
+    get color() {
+        return this.el.style.color;
+    }
+    set color(val) {
+        this.el.style.color = val;
+    }
 }
 export default Block;

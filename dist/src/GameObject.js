@@ -24,8 +24,13 @@ class GameObject {
         this.blocks.forEach(block => block.y += 1);
     }
     rotate() {
-        this.blocks.forEach(block => {
-            // 顺时针旋转 90度,, 第三个参数代表移动
+        // 先找出集合中最小的 x 和 y，然后根据最小的 x, y 先移回原点, 旋转 然后再移动回去
+        const { blocks } = this;
+        const minX = Math.min(...blocks.map(block => block.x));
+        const minY = Math.min(...blocks.map(block => block.y));
+        // 这里需要矩阵乘法
+        blocks.forEach(block => {
+            // 顺时针旋转 90度, 注意的是需要先移动到原点
             const [x, y] = matrixMul([block.x, block.y], [[0, 1, 0], [-1, 0, 0]]);
             block.x = x;
             block.y = y;

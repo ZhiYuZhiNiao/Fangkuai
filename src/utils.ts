@@ -13,6 +13,20 @@ export const rotateMap = {
   // 270: [[0, -1], [1, 0]] as [[number, number], [number, number]],
 }
 
-export const matrix3Mul3 = (matrix1: number[], matrix2: number[]) => {
-  
+/* 1 的第一行 和 2的 第一列相乘 */
+export const matrix3Mul3 = (matrix1: number[][], matrix2: number[][]) => {
+  const res: number[][] = [[], [], []]
+
+  for (let r = 0; r < matrix1.length; r++) {
+    for (let c = 0; c < matrix2.length; c++) {
+      console.log(`${matrix1[r][c]} * ${matrix2[c][r]}`)
+      res[r][c] = matrix1[r][c] * matrix2[c][r]
+    }
+  }
+
+  return res as [
+    [number, number, number],
+    [number, number, number],
+    [number, number, number]
+  ]
 }

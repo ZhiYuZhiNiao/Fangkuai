@@ -3,6 +3,7 @@ import Block from "./Block.js";
 import { L, LColor } from './L.js';
 import GameMap from "./GameMap.js";
 import BlocksType from "./BlocksType.js";
+import { INIT_MOVEX } from './constData.js';
 /*
   每个方块的创建都是在一个 4 * 4 的坐标里面创建的
   他们都有一个初始的坐标来表示他
@@ -37,9 +38,8 @@ function createBlocks(initCoordinates, color) {
         const block = new Block(el, color);
         console.log('x--', x);
         console.log('y--', y);
-        // 初始坐标, 需要向右移动 5个单元, 到达中间位置
-        const moveX = 5;
-        block.x = x + moveX;
+        // 初始坐标, 需要向右移动 4个单元, 到达中间位置
+        block.x = x + INIT_MOVEX;
         block.y = y;
         blocks.push(block);
     }
