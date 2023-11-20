@@ -1,13 +1,17 @@
-const ROW = 10
-const COL = 20
-const UNIT = 20
-const BLOCK_LENGTH = 4
-const INIT_MOVEX = 4
-
 /* 
-  w = 200; h = 400
-  x 轴方向的可移动范围 0 - 180; -> 0 - 9
-  y 轴方向的可移动范围 0- 380; ->  0 - 19
+  20 row * 10 col
+  unit 20px
 */
 
-export { ROW, COL, UNIT, BLOCK_LENGTH, INIT_MOVEX }
+const ROW = 20
+const COL = 10
+const UNIT = 20
+/* 
+  使用 mapData 数据来渲染 整个画面
+  0 表示空的在状态 白色
+  1 表示当前方块所在位置 pink 色吧
+  -1 表示方块不可移动, 灰色
+ */
+const mapData: number[][] = Array(ROW).fill(0).map(_ => Array(COL).fill(0))
+
+export { ROW, COL, UNIT, mapData }
