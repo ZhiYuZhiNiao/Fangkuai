@@ -12,6 +12,6 @@ const UNIT = 20
   1 表示当前方块所在位置 pink 色吧
   -1 表示方块不可移动, 灰色
  */
-const mapData: number[][] = Array(ROW).fill(0).map(_ => Array(COL).fill(0))
 
-export { ROW, COL, UNIT, mapData }
+
+export { ROW, COL, UNIT }
