@@ -2,10 +2,16 @@
   20 row * 10 col
   unit 20px
 */
+import GameObject from "./GameObject"
 
 const ROW = 20
 const COL = 10
 const UNIT = 20
+const SHAPE_TYPE_LIST: (new (x: number, y: number) => GameObject)[] = []
+const collectShapeType = (value: (new (x: number, y: number) => GameObject)) => {
+  SHAPE_TYPE_LIST.push(value)
+}
+
 /* 
   使用 mapData 数据来渲染 整个画面
   0 表示空的在状态 白色
@@ -14,4 +20,4 @@ const UNIT = 20
  */
 
 
-export { ROW, COL, UNIT }
+export { ROW, COL, UNIT, collectShapeType, SHAPE_TYPE_LIST }

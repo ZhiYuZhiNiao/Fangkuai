@@ -5,14 +5,14 @@
 type FixedLengthArray<T, N extends number> = [T, ...T[]] & { length: N }
 type LenFourArray<T> = FixedLengthArray<T, 4>
 
-enum Direction {
-  top, down, left, right
-}
-
+/* x, y 是原点， data 是描述 原点和其他点的关系 每种形状正常都有4种状态, 所以限制了数组长度为 4 */
 interface IShape {
-  data: LenFourArray<Array<{ x: number, y: number }>>
-  dir: Direction
+  originX: number
+  originY: number
+  shapes: LenFourArray<Array<{x: number, y: number}>>
+  createShapes(x: number, y: number): LenFourArray<Array<{x: number, y: number}>>
 }
 
-export { IShape, Direction }
+export default IShape
 export type { LenFourArray }
+

@@ -1,18 +1,19 @@
-import ShapeType from './ShapeType.js'
-import L from './L.js'
-import { Direction, IShape } from './IShape'
-const shapeTypeMap = {
-  [ShapeType.L]: L,
-  [ShapeType.J]: L,
-  [ShapeType.O]: L,
-  [ShapeType.T]: L,
-  [ShapeType.Z]: L,
-  [ShapeType.S]: L,
-  [ShapeType.I]: L
+
+import { SHAPE_TYPE_LIST } from './ConstData.js'
+class Factory {
+  private static instance: Factory
+  private constructor() {}
+  static get factoryInstance() {
+    if(Factory.instance) return Factory.instance
+    return new Factory()
+  }
+
+  get randomGameObjClass() {
+    const { length } = SHAPE_TYPE_LIST
+    const index = Math.floor(Math.random() * length)
+    return SHAPE_TYPE_LIST[index]
+  }
 }
 
-function createShape(type: ShapeType, originX: number, originY: number, dir: Direction) {
-  return new shapeTypeMap[type](originX, originY, dir)
-}
+export default Factory
 
-export { createShape }
