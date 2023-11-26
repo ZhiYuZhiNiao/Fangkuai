@@ -1,15 +1,16 @@
+
 import IShape from "./IShape.js"
 import type { LenFourArray } from './IShape.js'
 abstract class GameObject implements IShape {
   originX: number
   originY: number
   dirState: number // 方向状态, 0, 1, ,2 ,3 
-  shapes: LenFourArray<Array<{x: number, y: number}>>
-  constructor(x: number, y: number) {
+  shapes: LenFourArray<Array<{ x: number, y: number }>>
+  constructor(x: number, y: number, dirState: number) {
     this.originX = x
     this.originY = y
     this.shapes = this.createShapes(x, y)
-    this.dirState = 0
+    this.dirState = dirState
   }
 
   get shape() {
@@ -20,24 +21,13 @@ abstract class GameObject implements IShape {
   abstract createShapes(x: number, y: number): LenFourArray<Array<{x: number, y: number}>>
 
   /* 每次移动, 都会生成一个新的 游戏元素对象? */
-  move(moveBefore: (shape: {x: number, y: number}[]) => boolean, key: string) {
-    if (!moveBefore(this.shape)) return
-    switch(key) {
-      case 's':
-        this.originY += 1
-        break
-      case 'a':
-        this.originX -= 1
-        break
-      case 'd':
-        this.originX += 1
-        break
-    }
+  move(changX: number, changY: number) {
+    this.originX += changX
+    this.originY += changY
   }
 
   /* 每次旋转都是 dirState 在变,  */
-  rotate(rotateBefore: (shape: {x: number, y: number }[]) => boolean) {
-    if (!rotateBefore(this.shape)) return
+  rotate() {
     this.dirState++
     this.dirState = this.dirState % 4
   }

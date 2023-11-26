@@ -1,15 +1,15 @@
-/*
-  20 row * 10 col
-  unit 20px
-*/
 const ROW = 20;
 const COL = 10;
 const UNIT = 20;
+const SHAPE_TYPE_LIST = [];
+const collectShapeType = (value) => {
+    console.log('开始收集啦value', value);
+    SHAPE_TYPE_LIST.push(...value);
+};
 /*
   使用 mapData 数据来渲染 整个画面
   0 表示空的在状态 白色
   1 表示当前方块所在位置 pink 色吧
   -1 表示方块不可移动, 灰色
  */
-const mapData = Array(ROW).fill(0).map(_ => Array(COL).fill(0));
-export { ROW, COL, UNIT, mapData };
+export { ROW, COL, UNIT, collectShapeType, SHAPE_TYPE_LIST };

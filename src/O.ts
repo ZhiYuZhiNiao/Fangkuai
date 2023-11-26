@@ -1,8 +1,6 @@
 import GameObject from "./GameObject.js"
 import { LenFourArray } from "./IShape.js"
-import { collectShapeType } from './ConstData.js'
 
-@collectShapeType
 class O extends GameObject {
   createShapes(x: number, y: number): LenFourArray<Array<{x: number, y: number}>> {
     return [

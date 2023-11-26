@@ -8,8 +8,9 @@ const ROW = 20
 const COL = 10
 const UNIT = 20
 const SHAPE_TYPE_LIST: (new (x: number, y: number) => GameObject)[] = []
-const collectShapeType = (value: (new (x: number, y: number) => GameObject)) => {
-  SHAPE_TYPE_LIST.push(value)
+const collectShapeType = (value: (new (x: number, y: number) => GameObject)[]) => {
+  console.log('开始收集啦value', value)
+  SHAPE_TYPE_LIST.push(...value)
 }
 
 /* 

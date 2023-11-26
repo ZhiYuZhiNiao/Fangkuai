@@ -1,5 +1,5 @@
 
-import { SHAPE_TYPE_LIST } from './ConstData.js'
+import { SHAPE_TYPE_LIST } from './constData.js'
 class Factory {
   private static instance: Factory
   private constructor() {}
