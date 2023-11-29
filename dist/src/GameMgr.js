@@ -1,8 +1,8 @@
 /*
  * @Author: 陈天敏 18082020969@163.com
  * @Date: 2023-11-25 15:49:41
- * @LastEditors: 陈天敏 18082020969@163.com
- * @LastEditTime: 2023-11-26 22:49:26
+ * @LastEditors: ctm 18082020969@163.com
+ * @LastEditTime: 2023-11-29 19:15:05
  * @FilePath: \Fangkuai\src\GameMgr.ts
  * @Description: 描述
  */
@@ -13,6 +13,9 @@ class GameMgr {
         /* 0 无, 1 有颜色, -1 灰色 */
         this.mapData = Array(ROW).fill(0).map(_ => Array(COL).fill(0));
         this.speed = 1;
+        this.score = 0;
+        this.isGameOver = false;
+        this.autoTimer = -1;
         this.mapEl = document.getElementById('map');
     }
     start() {
@@ -39,7 +42,24 @@ class GameMgr {
             }
         });
         /* 自动下降 */
-        // setInterval(this.moveDown.bind(this), 700 / this.speed)
+        this.autoTimer = setInterval(this.moveDown.bind(this), 700 / this.speed);
+    }
+    checkGameOver() {
+        const { mapData } = this;
+        return mapData[0].some(val => val === -1);
+    }
+    /* 检测是否填充满了一行 */
+    findFullRow(block) {
+        const { shape } = block;
+        const { mapData } = this;
+        /* 判断固定的 shape 所处于的每一行是否已经被填满 */
+        const res = shape.reduce((prev, el) => {
+            if (mapData[el.y].every(val => val === -1)) {
+                prev.push(el.y);
+            }
+            return prev;
+        }, []).sort((a, b) => a - b);
+        return [...new Set(res)]; // 去重
     }
     checkMoveL() {
         const { block, mapData } = this;
@@ -61,7 +81,7 @@ class GameMgr {
         const tempState = (block.dirState + 1) % 4;
         const rotatedBlock = new L(block.originX, block.originY, tempState);
         const shape = rotatedBlock.shape;
-        return shape.some(({ x, y }) => mapData[y][x] === -1);
+        return shape.some(({ x, y }) => mapData[y][x] === -1 || x < 0 || x > COL - 1);
     }
     // 和墙碰撞测试，如果超出了强。则需要强制移动回去
     repairRotateWall() {
@@ -94,10 +114,9 @@ class GameMgr {
         this.clearBlock();
         if (!this.checkRotateFixed()) {
             // 没有碰撞, 直接旋转
-            const flag = this.repairRotateWall();
             block.rotate();
             // 产生新
-            flag && (this.block = new L(block.originX, block.originY, block.dirState));
+            this.block = new L(block.originX, block.originY, block.dirState);
         }
         else {
             // 碰撞到了
@@ -130,10 +149,53 @@ class GameMgr {
         else {
             // 碰撞到了
             this.fixedBlock();
+            // 查找哪些行已经被填满了, 得到的结果是升序的
+            const fullRowIndexs = this.findFullRow(block);
+            const { length } = fullRowIndexs;
+            if (length) {
+                /* 销毁 */
+                this.destryBlock(fullRowIndexs);
+                this.setScore(fullRowIndexs);
+            }
+            if (this.checkGameOver()) {
+                this.isGameOver = true;
+                clearInterval(this.autoTimer);
+                alert('游戏结束');
+                return;
+            }
             // 初始位置生成一个新的block(应该是一个随机的方块)
             this.block = new L(4, 0, 0);
         }
         this.coloredBlock();
+    }
+    setScore(fullRowIndexs) {
+        const { length } = fullRowIndexs;
+        console.log('fullRowIndexs', fullRowIndexs);
+        this.score = fullRowIndexs.reduce((prev) => {
+            prev += length * 10;
+            return prev;
+        }, this.score);
+        console.log('score', this.score);
+    }
+    destryBlock(rowIndexs) {
+        const { mapData } = this;
+        for (const r of rowIndexs) {
+            for (let c = 0; c < COL; c++) {
+                mapData[r][c] = 0; // 清空
+            }
+        }
+        /* 整体下移 */
+        this.moveDownOne(rowIndexs);
+        this.draw();
+    }
+    /* 这些行上面都 向下移动一行, 从后向前遍历 */
+    moveDownOne(rowIndexs) {
+        const { mapData } = this;
+        for (const r of rowIndexs) {
+            for (let i = r; i >= 1; i--) {
+                mapData[i] = [...mapData[i - 1]];
+            }
+        }
     }
     coloredBlock() {
         const { block } = this;
