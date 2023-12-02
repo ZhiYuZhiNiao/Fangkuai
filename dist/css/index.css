@@ -9,7 +9,9 @@
 .screen {
   left: 30px;
   top: 15px;
+  display: flex;
 }
+
 
 .screen table td {
   width: 20px;
@@ -29,3 +31,16 @@
   background-color: #fff;
 }
 
+
+.scroe-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+} 
+
+.scroe-box .score {
+  display: flex;
+  margin-left: 15px;
+  margin-bottom: 60px;
+  font-weight: 700;
+}

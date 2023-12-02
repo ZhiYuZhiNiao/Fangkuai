@@ -7,7 +7,7 @@
  * @Description: 描述
  */
 
-import { ROW, COL } from './constData.js'
+import { ROW, COL, SHAPE_TYPE_MAP } from './constData.js'
 import Factory from './Factory.js'
 import GameObject from './GameObject.js'
 import L from './L.js'
@@ -20,16 +20,19 @@ class GameMgr {
   private score = 0
   private isGameOver = false
   private autoTimer = -1
+  private scoreEl: HTMLElement
+  private curKey: number = 0
 
   constructor() {
     this.mapEl = document.getElementById('map')!
+    this.scoreEl = document.querySelector('.scroe-box .value')!
   }
   start() {
     this.init()
   }
 
   private init() {
-    this.block = new L(4, 0, 0)
+    this.block = new (this.getRandomShapeClass())(4, 0, 0)
     /* 状态变化, 重新画 */
     this.coloredBlock()
 
@@ -51,7 +54,14 @@ class GameMgr {
     })
 
     /* 自动下降 */
-    this.autoTimer = setInterval(this.moveDown.bind(this), 700 / this.speed)
+    this.autoTimer = setInterval(this.moveDown.bind(this, 1), 700 / this.speed)
+  }
+
+  private getRandomShapeClass() {
+    const { size } = SHAPE_TYPE_MAP
+    const key = Math.floor(Math.random() * size)
+    this.curKey = key
+    return SHAPE_TYPE_MAP.get(key)!
   }
 
   private checkGameOver() {
@@ -94,7 +104,7 @@ class GameMgr {
     // 判断如果旋转之后，是否会和原来固定位置产生重合，说明就旋转不了
     // 先虚拟的执行一次旋转
     const tempState = (block.dirState + 1) % 4
-    const rotatedBlock = new L(block.originX, block.originY, tempState)
+    const rotatedBlock = new (SHAPE_TYPE_MAP.get(this.curKey)!)(block.originX, block.originY, tempState)
     const shape = rotatedBlock.shape
     return shape.some(({x, y}) => mapData[y][x] === -1 || x < 0 || x > COL - 1)
   }
@@ -105,7 +115,7 @@ class GameMgr {
     // 判断如果旋转之后，是否会和原来固定位置产生重合，说明就旋转不了
     // 先虚拟的执行一次旋转
     const tempState = (block.dirState + 1) % 4
-    const rotatedBlock = new L(block.originX, block.originY, tempState)
+    const rotatedBlock = new (SHAPE_TYPE_MAP.get(this.curKey)!)(block.originX, block.originY, tempState)
     const shape = rotatedBlock.shape
     const maxX = Math.max(...shape.map(({ x }) => x))
     const minX = Math.min(...shape.map(({ x }) => x))
@@ -134,7 +144,7 @@ class GameMgr {
       // 没有碰撞, 直接旋转
       block.rotate()
       // 产生新
-      this.block = new L(block.originX, block.originY, block.dirState)
+      this.block = new (SHAPE_TYPE_MAP.get(this.curKey)!)(block.originX, block.originY, block.dirState)
     } else {
       // 碰撞到了
     }
@@ -148,7 +158,7 @@ class GameMgr {
     if (!check()) {
       // 没有碰撞到，就移动
       block.move(changeX, changY)
-      this.block = new L(block.originX, block.originY, block.dirState)
+      this.block = new (SHAPE_TYPE_MAP.get(this.curKey)!)(block.originX, block.originY, block.dirState)
     } else {
       // 碰撞到了,
     }
@@ -162,7 +172,7 @@ class GameMgr {
     // 是否碰撞到了, true 说明碰撞到了
     if (!this.checkMoveDown()) {
       block.move(0, step)
-      this.block = new L(block.originX, block.originY, block.dirState)
+      this.block = new (SHAPE_TYPE_MAP.get(this.curKey)!)(block.originX, block.originY, block.dirState)
     } else {
       // 碰撞到了
       this.fixedBlock()
@@ -181,7 +191,7 @@ class GameMgr {
         return
       }
       // 初始位置生成一个新的block(应该是一个随机的方块)
-      this.block = new L(4, 0, 0)
+      this.block = new (this.getRandomShapeClass())(4, 0, 0)
     }
     this.coloredBlock()
   }
@@ -193,7 +203,8 @@ class GameMgr {
       prev += length * 10
       return prev
     }, this.score)
-    console.log('score', this.score)
+    // console.log('score', this.score)
+    this.scoreEl.innerText = this.score + ''
   }
 
   private destryBlock(rowIndexs: number[]) {
@@ -237,6 +248,7 @@ class GameMgr {
     const { mapData } = this
     for (const {x, y} of block.shape) {
       // x col, y row
+      // console.log('x, y = ', x, y)
       mapData[y][x] = state
     }
     this.draw()
